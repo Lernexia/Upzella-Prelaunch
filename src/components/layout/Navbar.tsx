@@ -50,9 +50,9 @@ const Navbar = () => {
         <Link to="/" className="flex items-center">
 
           <span className="font-bold text-2xl text-purple-700">UpZella</span>
-          <span className="ml-2 px-2 py-0.5 bg-white rounded-full text-purple-600 text-xs font-medium">
+          {/* <span className="ml-2 px-2 py-0.5 bg-white rounded-full text-purple-600 text-xs font-medium">
             HR Portal
-          </span>
+          </span> */}
         </Link>
 
         {/* Desktop Navigation */}
