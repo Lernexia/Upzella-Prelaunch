@@ -69,7 +69,7 @@ const Hero = () => {
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
             <a
-              href="https://www.demo-dev.upzella.in"
+              href="https://demo-app.upzella.in/"
               target="_blank"
               rel="noopener noreferrer"
               className={cn(
