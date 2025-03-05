@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Plus, X, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -7,8 +6,8 @@ export interface CRMProvider {
   id: string;
   name: string;
   enabled: boolean;
-  apiKey?: string;
-  endpoint?: string;
+  apiKey: string;
+  endpoint: string;
   expanded?: boolean;
 }
 
@@ -22,36 +21,36 @@ interface CRMIntegrationProps {
   errors: Partial<Record<string, string>>;
 }
 
-// Predefined CRM providers
-const PREDEFINED_PROVIDERS: Omit<CRMProvider, 'id' | 'expanded'>[] = [
-  { name: 'Salesforce', enabled: false },
-  { name: 'HubSpot', enabled: false },
-  { name: 'Zoho Recruit', enabled: false },
-  { name: 'Workable', enabled: false },
-  { name: 'BambooHR', enabled: false },
-];
+// Generate API key and endpoint
+const generateAPIKey = () => uuidv4();
+const generateEndpoint = (name: string) => `https://api.${name.toLowerCase().replace(/\s+/g, '')}.com/v1`;
 
-const CRMIntegration: React.FC<CRMIntegrationProps> = ({
-  data,
-  setData,
-  errors
-}) => {
+
+const CRMIntegration: React.FC<CRMIntegrationProps> = ({ data, setData, errors }) => {
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [newProviderName, setNewProviderName] = useState('');
 
   const toggleProvider = (id: string) => {
     setData(prev => ({
       ...prev,
-      providers: prev.providers.map(p => 
-        p.id === id ? { ...p, enabled: !p.enabled } : p
+      providers: prev.providers.map(p =>
+        p.id === id
+          ? {
+              ...p,
+              enabled: !p.enabled,
+              apiKey: !p.enabled ? p.apiKey || generateAPIKey() : p.apiKey, // Set API key if enabling
+              endpoint: !p.enabled ? p.endpoint || generateEndpoint(p.name) : p.endpoint, // Set endpoint if enabling
+            }
+          : p
       ),
     }));
   };
+  
 
   const toggleExpanded = (id: string) => {
     setData(prev => ({
       ...prev,
-      providers: prev.providers.map(p => 
+      providers: prev.providers.map(p =>
         p.id === id ? { ...p, expanded: !p.expanded } : p
       ),
     }));
@@ -60,7 +59,7 @@ const CRMIntegration: React.FC<CRMIntegrationProps> = ({
   const updateProviderField = (id: string, field: string, value: string) => {
     setData(prev => ({
       ...prev,
-      providers: prev.providers.map(p => 
+      providers: prev.providers.map(p =>
         p.id === id ? { ...p, [field]: value } : p
       ),
     }));
@@ -68,41 +67,41 @@ const CRMIntegration: React.FC<CRMIntegrationProps> = ({
 
   const addNewProvider = () => {
     if (!newProviderName.trim()) return;
-    
+
     const newProvider: CRMProvider = {
       id: uuidv4(),
       name: newProviderName,
       enabled: true,
       expanded: true,
-      apiKey: '',
-      endpoint: ''
+      apiKey: generateAPIKey(),
+      endpoint: generateEndpoint(newProviderName),
     };
-    
+
     setData(prev => ({
       ...prev,
       providers: [...prev.providers, newProvider],
     }));
-    
+
     setNewProviderName('');
     setIsAddingNew(false);
   };
 
+
   return (
     <div className="form-section form-section-active animate-slide-in">
       <h3 className="section-title">CRM Integration</h3>
-      
+
       <p className="text-sm text-gray-600 mb-4">
         Connect job postings with your existing CRM systems to automatically sync candidate data.
       </p>
-      
+
       <div className="mb-6">
         <div className="grid gap-3">
           {data.providers.map((provider) => (
-            <div 
+            <div
               key={provider.id}
-              className={`border rounded-lg overflow-hidden transition-all duration-300 ${
-                provider.enabled ? 'border-upzella-primary bg-upzella-neutral/20' : 'border-gray-200'
-              }`}
+              className={`border rounded-lg overflow-hidden transition-all duration-300 ${provider.enabled ? 'border-upzella-primary bg-upzella-neutral/20' : 'border-gray-200'
+                }`}
             >
               <div className="flex items-center justify-between p-3">
                 <div className="flex items-center">
@@ -113,26 +112,30 @@ const CRMIntegration: React.FC<CRMIntegrationProps> = ({
                     onChange={() => toggleProvider(provider.id)}
                     className="h-4 w-4 rounded border-gray-300 text-upzella-primary focus:ring-upzella-primary/25"
                   />
-                  <label 
+                  <label
                     htmlFor={`provider-${provider.id}`}
                     className={`ml-2 font-medium ${provider.enabled ? 'text-upzella-primary' : 'text-gray-700'}`}
                   >
                     {provider.name}
                   </label>
                 </div>
-                
-                {provider.enabled && (
-                  <button
-                    type="button"
-                    onClick={() => toggleExpanded(provider.id)}
-                    className="p-1 rounded hover:bg-gray-100 text-gray-500"
-                    aria-label={provider.expanded ? 'Collapse' : 'Expand'}
-                  >
-                    {provider.expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                  </button>
-                )}
+
+                {provider.enabled && (provider.expanded = true)}
+
+                {/* <button
+                  type="button"
+                  onClick={() => {
+                    if (!provider.enabled) {
+                      toggleExpanded(provider.id);
+                    }
+                  }}
+                  className="p-1 rounded hover:bg-gray-100 text-gray-500"
+                  aria-label={provider.expanded ? 'Collapse' : 'Expand'}
+                >
+                  {provider.expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                </button> */}
               </div>
-              
+
               {provider.enabled && provider.expanded && (
                 <div className="p-3 pt-0 border-t border-gray-200 animate-fade-in">
                   <div className="mb-3">
@@ -149,7 +152,7 @@ const CRMIntegration: React.FC<CRMIntegrationProps> = ({
                       <p className="form-error">{errors[`${provider.id}-apiKey`]}</p>
                     )}
                   </div>
-                  
+
                   <div>
                     <label htmlFor={`endpoint-${provider.id}`} className="input-label">API Endpoint</label>
                     <input
@@ -164,28 +167,17 @@ const CRMIntegration: React.FC<CRMIntegrationProps> = ({
                       <p className="form-error">{errors[`${provider.id}-endpoint`]}</p>
                     )}
                   </div>
-                  
-                  <div className="mt-2 text-xs text-gray-500 flex items-center">
-                    <ExternalLink size={12} className="mr-1" />
-                    <a 
-                      href="#" 
-                      className="text-upzella-primary hover:underline"
-                      onClick={(e) => e.preventDefault()}
-                    >
-                      View documentation for {provider.name} integration
-                    </a>
-                  </div>
                 </div>
               )}
             </div>
           ))}
         </div>
       </div>
-      
+
       {isAddingNew ? (
         <div className="mb-4 p-3 border rounded-md animate-scale-in">
           <h4 className="text-sm font-medium mb-2">Add Custom CRM Integration</h4>
-          
+
           <div className="flex items-center gap-2">
             <input
               type="text"
@@ -195,7 +187,7 @@ const CRMIntegration: React.FC<CRMIntegrationProps> = ({
               className="form-input flex-1"
               autoFocus
             />
-            
+
             <button
               type="button"
               onClick={addNewProvider}
@@ -204,7 +196,7 @@ const CRMIntegration: React.FC<CRMIntegrationProps> = ({
             >
               Add
             </button>
-            
+
             <button
               type="button"
               onClick={() => {

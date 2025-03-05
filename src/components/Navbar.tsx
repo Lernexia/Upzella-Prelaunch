@@ -6,9 +6,9 @@ import { cn } from '@/lib/utils';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(true);
   const location = useLocation();
-  
+
   const isActive = (path: string) => location.pathname === path;
 
   useEffect(() => {
@@ -48,10 +48,8 @@ const Navbar = () => {
     )}>
       <div className="max-container flex items-center justify-between">
         <Link to="/" className="flex items-center">
-          <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center text-purple-600 font-bold text-xl mr-3">
-            U
-          </div>
-          <span className="font-bold text-xl text-purple-600">UpZella</span>
+
+          <span className="font-bold text-2xl text-purple-700">UpZella</span>
           <span className="ml-2 px-2 py-0.5 bg-white rounded-full text-purple-600 text-xs font-medium">
             HR Portal
           </span>
@@ -60,13 +58,13 @@ const Navbar = () => {
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
           {navLinks.map((link) => (
-            <Link 
-              key={link.path} 
-              to={link.path} 
+            <Link
+              key={link.path}
+              to={link.path}
               className={cn(
                 "transition-all duration-300 text-sm font-medium",
-                isActive(link.path) 
-                  ? "text-purple-700 font-semibold" 
+                isActive(link.path)
+                  ? "text-purple-700 font-semibold"
                   : "text-gray-700 hover:text-purple-600"
               )}
             >
@@ -76,7 +74,7 @@ const Navbar = () => {
         </nav>
 
         {/* Mobile Menu Toggle */}
-        <button 
+        <button
           className="md:hidden text-gray-700 focus:outline-none"
           onClick={toggleMobileMenu}
           aria-label="Toggle mobile menu"
@@ -90,21 +88,33 @@ const Navbar = () => {
       </div>
 
       {/* Mobile Navigation */}
-      <div 
+      <div
         className={cn(
-          "md:hidden fixed top-[60px] right-0 left-0 bg-white shadow-lg transition-transform duration-300 ease-in-out transform",
-          isMobileMenuOpen ? "translate-y-0 glass" : "-translate-y-full"
+          "md:hidden fixed top-14 w-full left-0 bg-white shadow-lg transition-transform duration-300 ease-in-out transform",
+          isMobileMenuOpen ? "translate-y-0 glass" : "-translate-y-full top-0",
+          isScrolled ? 'glass py-3 shadow-md' : 'bg-transparent py-5'
         )}
       >
+         {/* <button
+          className="md:hidden text-gray-700 focus:outline-none float-right m-5"
+          onClick={toggleMobileMenu}
+          aria-label="Toggle mobile menu"
+        >
+          {isMobileMenuOpen ? (
+            <X className="w-6 h-6" />
+          ) : (
+            <Menu className="w-6 h-6" />
+          )}
+        </button> */}
         <div className="flex flex-col p-4 space-y-4">
           {navLinks.map((link) => (
-            <Link 
-              key={link.path} 
-              to={link.path} 
+            <Link
+              key={link.path}
+              to={link.path}
               className={cn(
                 "transition-all duration-200 px-4 py-2 text-center rounded-md",
-                isActive(link.path) 
-                  ? "bg-purple-100 text-purple-700 font-medium" 
+                isActive(link.path)
+                  ? "bg-purple-100 text-purple-700 font-medium"
                   : "text-gray-700 hover:bg-purple-50 hover:text-purple-600"
               )}
             >

@@ -21,7 +21,7 @@ const SectionNav: React.FC<SectionNavProps> = ({
   onSectionChange,
 }) => {
   return (
-    <div className="mb-8">
+    <div className="mb-8 ">
       <div className="flex items-center justify-between mb-2">
         <h2 className="text-xl font-medium text-gray-800">Job Posting</h2>
         <div className="text-sm text-gray-500">
@@ -29,10 +29,10 @@ const SectionNav: React.FC<SectionNavProps> = ({
         </div>
       </div>
       
-      <div className="flex items-center w-full overflow-x-auto pb-2 hide-scrollbar">
+      <div className="flex items-center w-full overflow-x-auto py-2 px-2 hide-scrollbar">
         <div className="flex items-center w-full">
           {sections.map((section, index) => (
-            <React.Fragment key={section.id}>
+            <div className='flex w-full items-center justify-between' key={section.id}>
               {/* Section Button */}
               <button
                 type="button"
@@ -55,7 +55,7 @@ const SectionNav: React.FC<SectionNavProps> = ({
                   {section.isCompleted ? (
                     <Check size={16} className="animate-scale" />
                   ) : section.hasErrors ? (
-                    <AlertCircle size={16} className="text-amber-500" />
+                    <AlertCircle size={16} className="text-white" />
                   ) : (
                     <span className="text-sm font-medium">{index + 1}</span>
                   )}
@@ -71,7 +71,7 @@ const SectionNav: React.FC<SectionNavProps> = ({
               
               {/* Connection Line */}
               {index < sections.length - 1 && (
-                <div className="flex-grow mx-1 sm:mx-3 h-0.5 bg-gray-200 relative">
+                <div className="flex-grow mx-1 sm:mx-3 h-0.5 bg-gray-300 relative">
                   <div 
                     className="absolute top-0 left-0 h-full bg-purple-600 transition-all duration-500 ease-out"
                     style={{ 
@@ -80,7 +80,7 @@ const SectionNav: React.FC<SectionNavProps> = ({
                   />
                 </div>
               )}
-            </React.Fragment>
+            </div>
           ))}
         </div>
       </div>

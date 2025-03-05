@@ -1,10 +1,18 @@
 
-import React from 'react';
 import JobPostingForm from '@/components/job-posting/JobPostingForm';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { getCookie } from '@/hooks/cookies';
 
 const Index = () => {
+
+  let userId = getCookie("user_id");
+
+  if (!userId) {
+    document.cookie = `user_id=${crypto.randomUUID()}; path=/; max-age=3600`; // Expires in 1 hour
+    userId = getCookie("user_id");
+  }  
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-100 via-purple-50/30 to-white">
       <Navbar />
@@ -18,10 +26,10 @@ const Index = () => {
             </div>
             
             <div className="mt-4 sm:mt-0 flex items-center">
-              <div className="p-1.5 bg-purple-100 rounded-md text-xs font-medium text-purple-600 mr-2">
+              <div className="p-1.5 bg-white px-4 animate-pulse rounded-md text-xs font-medium text-purple-600 mr-2">
                 DEMO MODE
               </div>
-              <a href="#" className="text-sm text-purple-600 hover:underline">View Documentation</a>
+              {/* <a href="#" className="text-sm text-purple-600 hover:underline">View Documentation</a> */}
             </div>
           </div>
         </div>

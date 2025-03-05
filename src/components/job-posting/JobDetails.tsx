@@ -25,7 +25,7 @@ const JobDetails: React.FC<JobDetailsProps> = ({ data, setData, errors }) => {
       text: '',
       required: false,
     };
-    
+
     setData(prev => ({
       ...prev,
       questions: [...prev.questions, newQuestion],
@@ -35,7 +35,7 @@ const JobDetails: React.FC<JobDetailsProps> = ({ data, setData, errors }) => {
   const updateQuestion = (id: string, updatedQuestion: Partial<Question>) => {
     setData(prev => ({
       ...prev,
-      questions: prev.questions.map(q => 
+      questions: prev.questions.map(q =>
         q.id === id ? { ...q, ...updatedQuestion } : q
       ),
     }));
@@ -51,7 +51,7 @@ const JobDetails: React.FC<JobDetailsProps> = ({ data, setData, errors }) => {
   return (
     <div className="form-section form-section-active animate-slide-in">
       <h3 className="section-title">Job Details</h3>
-      
+
       <div className="mb-4">
         <label htmlFor="job-title" className="input-label">Job Title</label>
         <input
@@ -64,7 +64,7 @@ const JobDetails: React.FC<JobDetailsProps> = ({ data, setData, errors }) => {
         />
         {errors.title && <p className="form-error">{errors.title}</p>}
       </div>
-      
+
       <div className="mb-4">
         <label htmlFor="job-description" className="input-label">Job Description</label>
         <textarea
@@ -77,20 +77,22 @@ const JobDetails: React.FC<JobDetailsProps> = ({ data, setData, errors }) => {
         />
         {errors.description && <p className="form-error">{errors.description}</p>}
       </div>
-      
+
       <TagInput
         label="Required Skills"
         tags={data.skills}
         setTags={(newTags) => {
-          setData(prev => ({ 
-            ...prev, 
-            skills: newTags 
+          const tagArray = Array.isArray(newTags) ? newTags :
+            typeof newTags === 'function' ? newTags(data.skills) : [];
+          setData(prev => ({
+            ...prev,
+            skills: tagArray
           }));
         }}
         placeholder="Type skill and press Enter (e.g. React, JavaScript)"
         error={errors.skills}
       />
-      
+
       <div className="mt-6 mb-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
@@ -106,7 +108,7 @@ const JobDetails: React.FC<JobDetailsProps> = ({ data, setData, errors }) => {
             Add Question
           </button>
         </div>
-        
+
         <div className="bg-gray-50 rounded-md p-3 border border-gray-200">
           {data.questions.length === 0 ? (
             <div className="text-center py-6 text-gray-500 text-sm">

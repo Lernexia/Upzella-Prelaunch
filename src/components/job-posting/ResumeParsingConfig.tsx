@@ -125,7 +125,7 @@ const ResumeParsingConfig: React.FC<ResumeParsingConfigProps> = ({
                       max="100"
                       value={criterion.weight}
                       onChange={e => updateCriteria(criterion.id, 'weight', parseInt(e.target.value) || 0)}
-                      className="form-input w-16 text-center"
+                      className="form-input text-center w-full"
                     />
                     <span className="ml-1">%</span>
                   </div>
