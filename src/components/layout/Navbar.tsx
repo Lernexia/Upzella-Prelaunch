@@ -48,37 +48,33 @@ const Navbar = () => {
     )}>
       <div className="max-container flex items-center justify-between">
         <Link to="/" className="flex items-center">
+
           <span className="font-bold text-2xl text-purple-700">UpZella</span>
+          <span className="ml-2 px-2 py-0.5 bg-white rounded-full text-purple-600 text-xs font-medium">
+            HR Portal
+          </span>
         </Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
           {navLinks.map((link) => (
-            <Link 
-              key={link.path} 
-              to={link.path} 
+            <Link
+              key={link.path}
+              to={link.path}
               className={cn(
                 "transition-all duration-300 text-sm font-medium",
-                isActive(link.path) 
-                  ? "text-purple-700 font-semibold" 
+                isActive(link.path)
+                  ? "text-purple-700 font-semibold"
                   : "text-gray-700 hover:text-purple-600"
               )}
             >
               {link.text}
             </Link>
           ))}
-          <div className="flex items-center space-x-3">
-            <Link 
-              to="/contact" 
-              className="bg-purple-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-all hover:bg-purple-700 hover:shadow-md"
-            >
-              Get a Call
-            </Link>
-          </div>
         </nav>
 
         {/* Mobile Menu Toggle */}
-        <button 
+        <button
           className="md:hidden text-gray-700 focus:outline-none"
           onClick={toggleMobileMenu}
           aria-label="Toggle mobile menu"
@@ -92,33 +88,39 @@ const Navbar = () => {
       </div>
 
       {/* Mobile Navigation */}
-      <div 
+      <div
         className={cn(
-          "md:hidden fixed top-[60px] right-0 left-0 bg-white shadow-lg transition-transform duration-300 ease-in-out transform",
-          isMobileMenuOpen ? "translate-y-0 glass" : "-translate-y-full"
+          "md:hidden fixed top-14 w-full left-0 bg-white shadow-lg transition-transform duration-300 ease-in-out transform",
+          isMobileMenuOpen ? "translate-y-0 glass" : "-translate-y-full top-0",
+          isScrolled ? 'glass py-3 shadow-md' : 'bg-transparent py-5'
         )}
       >
+         {/* <button
+          className="md:hidden text-gray-700 focus:outline-none float-right m-5"
+          onClick={toggleMobileMenu}
+          aria-label="Toggle mobile menu"
+        >
+          {isMobileMenuOpen ? (
+            <X className="w-6 h-6" />
+          ) : (
+            <Menu className="w-6 h-6" />
+          )}
+        </button> */}
         <div className="flex flex-col p-4 space-y-4">
           {navLinks.map((link) => (
-            <Link 
-              key={link.path} 
-              to={link.path} 
+            <Link
+              key={link.path}
+              to={link.path}
               className={cn(
                 "transition-all duration-200 px-4 py-2 text-center rounded-md",
-                isActive(link.path) 
-                  ? "bg-purple-100 text-purple-700 font-medium" 
+                isActive(link.path)
+                  ? "bg-purple-100 text-purple-700 font-medium"
                   : "text-gray-700 hover:bg-purple-50 hover:text-purple-600"
               )}
             >
               {link.text}
             </Link>
           ))}
-          <Link 
-            to="/contact" 
-            className="bg-purple-600 text-white py-3 rounded-md text-center text-sm font-medium transition-all hover:bg-purple-700"
-          >
-            Get a Call
-          </Link>
         </div>
       </div>
     </header>
