@@ -78,7 +78,7 @@ const Hero = () => {
                 "flex items-center justify-center hover:-translate-y-1"
               )}
             >
-              Create Job
+              Demo
             </a>
 
           </div>
