@@ -12,7 +12,8 @@ import {
   Copy,
   Check,
   Crown,
-  View
+  View,
+  Edit
 } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import {
@@ -39,6 +40,9 @@ import { v4 as uuidv4 } from 'uuid';
 interface BuilderInterfaceProps {
   onBack: any;
   template?: any;
+  isEditing?: boolean;
+  prevUrl?: string;
+  jobTitle?: any;
 }
 
 const reorder = (list: any[], startIndex: number, endIndex: number) => {
@@ -49,7 +53,7 @@ const reorder = (list: any[], startIndex: number, endIndex: number) => {
   return result;
 };
 
-export const BuilderInterface: React.FC<BuilderInterfaceProps> = ({ onBack, template }) => {
+export const BuilderInterface: React.FC<BuilderInterfaceProps> = ({ onBack, template, jobTitle, isEditing = false, prevUrl = '' }) => {
   const {
     activeForm,
     previewMode,
@@ -110,7 +114,7 @@ export const BuilderInterface: React.FC<BuilderInterfaceProps> = ({ onBack, temp
   };
 
   const handlePublish = () => {
-    const url = publishForm();
+    const url = isEditing ? prevUrl : publishForm();
     setPublishedUrl(url);
     setIsPublishModalOpen(true);
   };
@@ -246,89 +250,144 @@ export const BuilderInterface: React.FC<BuilderInterfaceProps> = ({ onBack, temp
   };
 
 
+  // console.log("Form Data:", activeForm);
   const handleFormPublishForm = async () => {
 
-    const formUuid = uuidv4();
+    const formUuid = isEditing ? prevUrl : uuidv4();
 
     try {
-      // Validate if a job is selected
-      if (!selectedJob) {
+
+      if (isEditing) {
         toast({
-          title: "Job selection required",
-          description: "Please select a job to associate with this form",
-          variant: "destructive"
+          title: "Updating the form...",
+          description: "Please wait while we updating your form"
         });
-        return;
-      }
 
-      // Show loading toast
-      toast({
-        title: "Publishing form...",
-        description: "Please wait while we publish your form"
-      });
+        const { data: SelectedJobID, error: jobError } = await supabase
+          .from("demo_jobs")
+          .select("id")
+          .eq("job_title", jobTitle)
+          .eq("user_id", getCookie('user_id'))
+          .single();
 
+        if (jobError) {
+          console.error("Error fetching job:", jobError);
+          throw jobError;
+        }
 
-      const { data: SelectedJobID, error: jobError } = await supabase
-        .from("demo_jobs")
-        .select("id")
-        .eq("job_title", selectedJob)
-        .eq("user_id", getCookie('user_id'))
-        .single();
-
-      if (jobError) {
-        console.error("Error fetching job:", jobError);
-        throw jobError;
-      }
-
-      console.log("SelectedJobID; ", SelectedJobID);
-
-      console.log(formUuid)
-
-      const { data: FormDataPush, error: FormDataPushError } = await supabase
-        .from("demo_forms")
-        .insert([
-          {
-            form_id: formUuid,
-            form_name: activeForm.name,
+        const { data: FormDataPush, error: FormDataPushError } = await supabase
+          .from("demo_forms")
+          .update({
             form_details: activeForm,
-            form_url: publishedUrl,
-            created_at: new Date().toISOString(),
-          }
-        ])
+            form_name: activeForm.name,
+            form_url: prevUrl,
+          })
+          .eq("form_url", prevUrl)
 
-      if (FormDataPushError) {
-        console.log("Error pushing form data:", FormDataPushError.message);
-        throw FormDataPushError;
+        if (FormDataPushError) {
+          console.log("Error pushing form data:", FormDataPushError.message);
+          throw FormDataPushError;
+        }
+
+        console.log("FormDataPush: ", FormDataPush)
+
+        setIsPublishModalOpen(false);
+
+        // Show success message
+        toast({
+          title: "Form updated successfully!",
+          description: `Your form for "${jobTitle}" is now updated and accessible.`,
+          variant: "default"
+        });
+
+        // Redirect to form list or another appropriate page
+        setTimeout(() => {
+          window.location.href = `${window.location.origin}/job-postings`;
+        }, 1500);
+      }
+      else {
+        // Validate if a job is selected
+        if (!selectedJob) {
+          toast({
+            title: "Job selection required",
+            description: "Please select a job to associate with this form",
+            variant: "destructive"
+          });
+          return;
+        }
+
+        // Show loading toast
+        toast({
+          title: "Publishing form...",
+          description: "Please wait while we publish your form"
+        });
+
+        console.log(selectedJob)
+
+
+        const { data: SelectedJobID, error: jobError } = await supabase
+          .from("demo_jobs")
+          .select("id")
+          .eq("job_title", selectedJob)
+          .eq("user_id", getCookie('user_id'))
+          .single();
+
+        if (jobError) {
+          console.error("Error fetching job:", jobError);
+          throw jobError;
+        }
+
+        console.log("SelectedJobID; ", SelectedJobID);
+
+        console.log(formUuid)
+
+        const { data: FormDataPush, error: FormDataPushError } = await supabase
+          .from("demo_forms")
+          .insert([
+            {
+              form_id: formUuid,
+              form_name: activeForm.name,
+              form_details: activeForm,
+              form_url: publishedUrl,
+              created_at: new Date().toISOString(),
+            }
+          ])
+
+        if (FormDataPushError) {
+          console.log("Error pushing form data:", FormDataPushError.message);
+          throw FormDataPushError;
+        }
+
+        console.log("FormDataPush: ", FormDataPush)
+
+        const { data: jobsData, error: supabaseError } = await supabase
+          .from("demo_jobs")
+          .update({
+            form_id: formUuid,
+          })
+          .eq("id", SelectedJobID.id);
+
+        if (supabaseError) {
+          console.error("Error updating job:", supabaseError);
+          throw supabaseError;
+        }
+
+        // Close the modal
+        setIsPublishModalOpen(false);
+
+        // Show success message
+        toast({
+          title: "Form published successfully!",
+          description: `Your form for "${selectedJob}" is now live and accessible.`,
+          variant: "default"
+        });
+
+        // Redirect to form list or another appropriate page
+        setTimeout(() => {
+          window.location.href = `${window.location.origin}/job-postings`;
+        }, 1500);
       }
 
-      console.log("FormDataPush: ",FormDataPush)
-
-      const { data: jobsData, error: supabaseError } = await supabase
-        .from("demo_jobs")
-        .update({
-          form_id: formUuid,
-        })
-        .eq("id", SelectedJobID.id);
-
-      if (supabaseError) {
-        console.error("Error updating job:", supabaseError);
-        throw supabaseError;
-      }
-
-      // Close the modal
-      setIsPublishModalOpen(false);
-
-      // Show success message
-      toast({
-        title: "Form published successfully!",
-        description: `Your form for "${selectedJob}" is now live and accessible.`,
-        variant: "default"
-      });
-
-      // Redirect to form list or another appropriate page
-      setTimeout(() => {
-        window.location.href= 'http://localhost:8080/job-postings'
-      }, 1500);
     } catch (error) {
       console.error("Error publishing form:", error);
 
@@ -354,14 +413,22 @@ export const BuilderInterface: React.FC<BuilderInterfaceProps> = ({ onBack, temp
             >
               <ArrowLeft className="h-4 w-4 mr-1" /> Back
             </Button>
-            <input className="text-xl font-semibold bg-transparent border-none outline-none"
+            <input className="text-xl  font-semibold bg-transparent border-none outline-none"
               type='text'
               value={activeForm.name}
               onChange={handleUpdateFormName}
             />
+
           </div>
 
           <div className="flex items-center space-x-2 flex-wrap justify-start">
+            {isEditing && (
+              <p className='flex animate-pulse items-center cursor-default text-sm bg-white text-purple-500 px-3 py-2 rounded-md'>
+                <Edit className='w-4 h-4 mr-1' />
+                Edit Mode
+              </p>
+            )}
+
 
             <div className="flex justify-end items-center">
               <DropdownMenu>
@@ -418,7 +485,7 @@ export const BuilderInterface: React.FC<BuilderInterfaceProps> = ({ onBack, temp
               onClick={handlePublish}
               className="bg-white text-purple-600 hover:bg-gray-100"
             >
-              <Send className="h-4 w-4 mr-1" /> Publish
+              <Send className="h-4 w-4 mr-1" /> {isEditing ? "Update" : "Publish"}
             </Button>
           </div>
         </div>
@@ -1058,18 +1125,31 @@ export const BuilderInterface: React.FC<BuilderInterfaceProps> = ({ onBack, temp
               <label className="block text-sm font-medium text-gray-700">
                 Select Job
               </label>
-              <select
-                value={selectedJob}
-                onChange={(e) => setSelectedJob(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-              >
-                <option value="">Select a Job</option>
-                {jobs.map((title, index) => (
-                  <option key={index} value={title}>
-                    {title}
-                  </option>
-                ))}
-              </select>
+              {
+                isEditing ?
+                  (
+                    <p
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    >
+                      {jobTitle}
+                    </p>
+                  )
+                  :
+                  (
+                    <select
+                      value={selectedJob}
+                      onChange={(e) => setSelectedJob(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    >
+                      <option value="">Select a Job</option>
+                      {jobs.map((title, index) => (
+                        <option key={index} value={title}>
+                          {title}
+                        </option>
+                      ))}
+                    </select>
+                  )
+              }
             </div>
 
 
