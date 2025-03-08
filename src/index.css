@@ -58,6 +58,9 @@
   html {
     scroll-behavior: smooth;
   }
+  label {
+    @apply text-sm text-gray-400 mb-2
+  }
 }
 
 @layer components {
@@ -184,4 +187,226 @@
 }
 
 
+@layer components {
+  .glass {
+    @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-lg;
+  }
+  
+  .glass-dark {
+    @apply bg-black/10 backdrop-blur-md border border-white/10 shadow-md;
+  }
+  
+  .section-padding {
+    @apply py-16 md:py-24 px-6 md:px-8;
+  }
+  
+  .max-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  .button-glow {
+    @apply relative overflow-hidden;
+  }
+  
+  .button-glow::after {
+    content: '';
+    @apply absolute top-0 -left-[100%] w-full h-full bg-white/20;
+    animation: button-glow 2s infinite;
+  }
+  
+  @keyframes button-glow {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(200%);
+    }
+  }
+  
+  .hover-scale {
+    @apply transition-transform duration-300 hover:scale-105;
+  }
+  
+  .reveal {
+    @apply opacity-0 transition-all duration-1000 ease-in-out;
+    transform: translateY(20px);
+  }
+  
+  .reveal.active {
+    @apply opacity-100;
+    transform: translateY(0);
+  }
+  
+  .bg-grid {
+    background-image: 
+      linear-gradient(to right, rgba(235, 235, 235, 0.1) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(235, 235, 235, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+  
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .glass-panel {
+    @apply bg-white/80 backdrop-blur-sm border border-white/20 shadow-glass;
+  }
+  
+  .section-title {
+    @apply text-xl font-medium text-purple-600 mb-6;
+  }
+  
+  .form-section {
+    @apply p-6 rounded-xl bg-white shadow-md mb-6 animate-fade-in border-l-4 border-purple-600;
+  }
+  
+  .form-section-active {
+    @apply border-l-4 border-purple-600;
+  }
+  
+  .input-label {
+    @apply block text-sm font-medium text-gray-700 mb-1;
+  }
+  
+  .form-input {
+    @apply px-4 py-2 border border-gray-200 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-purple-400/50 transition-all duration-200;
+  }
+  
+  .tag-input {
+    @apply bg-purple-50 text-sm py-1 px-3 rounded-full inline-flex items-center mr-2 mb-2 text-purple-700;
+  }
+  
+  .btn-primary {
+    @apply bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed;
+  }
+  
+  .btn-secondary {
+    @apply bg-purple-50 text-purple-700 px-4 py-2 rounded-md hover:bg-purple-100 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed;
+  }
+  
+  .btn-outline {
+    @apply border border-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed;
+  }
+  
+  .form-error {
+    @apply text-sm text-red-500 mt-1;
+  }
+
+  /* Custom transitions */
+  .section-transition-enter {
+    @apply opacity-0 translate-y-4;
+  }
+  
+  .section-transition-enter-active {
+    @apply opacity-100 translate-y-0 transition-all duration-300 ease-out;
+  }
+  
+  .section-transition-exit {
+    @apply opacity-100 translate-y-0;
+  }
+  
+  .section-transition-exit-active {
+    @apply opacity-0 -translate-y-4 transition-all duration-300 ease-in;
+  }
+  
+  /* Form Builder Specific Classes */
+  .form-builder-container {
+    @apply grid grid-cols-1 lg:grid-cols-12 gap-6 h-full;
+  }
+  
+  .form-builder-sidebar {
+    @apply lg:col-span-3 bg-purple-50 p-4 rounded-lg border border-purple-100 overflow-y-auto;
+  }
+  
+  .form-builder-main {
+    @apply lg:col-span-6 bg-white rounded-lg border border-gray-100 shadow-subtle overflow-y-auto;
+  }
+  
+  .form-builder-properties {
+    @apply lg:col-span-3 bg-purple-50 p-4 rounded-lg border border-purple-100 overflow-y-auto;
+  }
+  
+  .form-field-draggable {
+    @apply bg-white p-3 mb-3 rounded-md border border-purple-100 cursor-move shadow-sm hover:shadow-md transition-shadow duration-200 flex items-center gap-2;
+  }
+  
+  .form-canvas-dropzone {
+    @apply min-h-[200px] p-6 border-2 border-dashed border-purple-200 rounded-lg bg-purple-50/50;
+  }
+  
+  .form-canvas-dropzone.active {
+    @apply border-purple-500 bg-purple-100/50;
+  }
+  
+  .form-field-preview {
+    @apply p-4 mb-4 border border-gray-100 rounded-lg bg-white hover:border-purple-200 transition-colors duration-200 relative;
+  }
+  
+  .form-field-preview.selected {
+    @apply border-purple-500 ring-2 ring-purple-200;
+  }
+  
+  .form-field-preview .field-actions {
+    @apply absolute right-2 top-2 opacity-0 transition-opacity duration-200 flex gap-1;
+  }
+  
+  .form-field-preview:hover .field-actions {
+    @apply opacity-100;
+  }
+  
+  .form-action-button {
+    @apply p-1 rounded-md text-gray-500 hover:text-purple-700 hover:bg-purple-50 transition-colors duration-200;
+  }
+  
+  .property-group {
+    @apply mb-4 p-3 bg-white rounded-md border border-purple-100;
+  }
+  
+  .property-label {
+    @apply text-xs font-medium text-gray-500 mb-1 uppercase tracking-wide;
+  }
+  
+  .template-card {
+    @apply bg-white rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden;
+  }
+  
+  .template-card-selected {
+    @apply ring-2 ring-purple-500;
+  }
+  
+  .template-thumbnail {
+    @apply w-full h-32 bg-purple-50 border-b border-gray-100 flex items-center justify-center text-purple-300;
+  }
+  
+  .preview-toggle {
+    @apply bg-gray-100 p-1 rounded-full flex items-center cursor-pointer;
+  }
+  
+  .preview-toggle-option {
+    @apply px-3 py-1 rounded-full text-sm;
+  }
+  
+  .preview-toggle-option.active {
+    @apply bg-purple-600 text-white;
+  }
+}
+
+
+.custom-datepicker .react-datepicker__header {
+  background-color: #6C4EF3 !important;
+  color: #FFFFFF !important;
+}
+
+.custom-datepicker .react-datepicker__header .react-datepicker__current-month {
+  color: #FFFFFF !important;
+}
+
+.custom-datepicker .react-datepicker__header .react-datepicker__day-name {
+  color: #FFFFFF !important;
+}
+
+.custom-datepicker .react-datepicker__day--selected {
+  color: #FFFFFF !important;
+  background-color: #6C4EF3 !important;
+}
 

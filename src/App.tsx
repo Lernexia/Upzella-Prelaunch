@@ -6,6 +6,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import JobPostings from "./pages/JobPostings";
+import FormBuilder from "./pages/FormBuilder";
+import CreateJob from "./pages/CreateJob";
+import Candidates from "./pages/Candidates";
 
 const queryClient = new QueryClient();
 
@@ -17,8 +20,10 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/create-job" element={<CreateJob />} />
           <Route path="/job-postings" element={<JobPostings />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/form-builder" element={<FormBuilder />} />
+          <Route path="/candidates" element={<Candidates />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

@@ -14,21 +14,24 @@ interface JobPreviewProps {
   resumeConfig: ResumeParsingData;
   crmConfig: CRMIntegrationData;
   onSubmit: () => void;
+  isEditing?: boolean;
+  prevJobUrl?: string;
 }
 
 const JobPreview: React.FC<JobPreviewProps> = ({
   jobDetails,
   resumeConfig,
   crmConfig,
-  onSubmit
+  onSubmit,
+  isEditing = false,
+  prevJobUrl = '',
 }) => {
   const [copied, setCopied] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
 
-  const jobUrl = 'app.upzella.in/demo/jobs';
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(jobUrl);
+    navigator.clipboard.writeText(prevJobUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -36,30 +39,77 @@ const JobPreview: React.FC<JobPreviewProps> = ({
   const enabledCRMs = crmConfig.providers.filter(p => p.enabled);
 
   const OnSubmit = async () => {
-    toast.success('Job posted successfully!', {
-      description: 'Your job posting has been created and will be available for the next hour.'
-    });
+    try {
+      const userId = getCookie('user_id');
+      if (!userId) {
+        toast.error("Authentication Error", {
+          description: "User ID not found. Please log in again.",
+        });
+        return;
+      }
 
-    let newJobData: any = {
-      jobDetails: jobDetails,
-      resumeConfig: resumeConfig,
-      crmConfig: crmConfig,
-      jobUrl: jobUrl
-    }
+      const newJobData = {
+        jobDetails,
+        resumeConfig,
+        crmConfig,
+        jobUrl: prevJobUrl
+      };
 
-    const userId = getCookie('user_id');
+      let query;
 
-    const { data, error } = await supabase
-      .from("demo_jobs")
-      .insert([{ user_id: userId, job_details: newJobData }]);
+      if (isEditing) {
+        query = supabase
+          .from("demo_jobs")
+          .update({
+            job_details: newJobData,
+            job_url: prevJobUrl,
+            job_title: jobDetails.title
+          })
+          .eq("user_id", userId); // Ensure the correct job is updated
+      } else {
+        query = supabase
+          .from("demo_jobs")
+          .insert([
+            {
+              user_id: userId,
+              job_details: newJobData,
+              job_url: prevJobUrl,
+              job_title: jobDetails.title
+            }
+          ]);
+      }
 
-    if (error) {
-      console.error("Error inserting job:", error);
-      return;
-    }
-    else {
-      console.log("Job inserted successfully:", data);
-      window.location.href = `${window.location.origin}/job-postings`;
+      const { data, error } = await query;
+
+      if (error) {
+        console.error("Error submitting job:", error);
+        toast.error("Job submission failed", {
+          description: error.message,
+        });
+        return;
+      }
+
+      if (isEditing) {
+        toast.success("Job updated successfully", {
+          description: "Your job posting has been updated.",
+        });
+        window.location.reload();  // Refresh the page
+        return;
+      }
+      else {
+        toast.success("Job posted successfully!", {
+          description: "Your job posting has been created and will be available for the next hour.",
+        });
+      }
+
+      console.log("Job submission successful:", data);
+
+      if (!isEditing) {
+        window.location.href = `${window.location.origin}/form-builder`;
+      }
+    } catch (error) {
+      console.error("Unexpected error:", error);
+      toast.error("An unexpected error occurred. Please try again.");
     }
   };
 
@@ -200,7 +250,7 @@ const JobPreview: React.FC<JobPreviewProps> = ({
 
         <div className="flex items-center p-2 bg-white rounded border border-gray-200">
           <Link size={14} className="text-gray-400 mr-2" />
-          <span className="text-sm font-mono flex-1 truncate">{jobUrl}</span>
+          <span className="text-sm font-mono flex-1 truncate">{prevJobUrl}</span>
         </div>
       </div>
 
@@ -208,10 +258,19 @@ const JobPreview: React.FC<JobPreviewProps> = ({
         <button
           type="button"
           className="btn-primary inline-flex items-center px-8 py-2.5"
-          onClick={() => setShowDialog(true)}
+          onClick={() => {
+            if (isEditing) {
+              OnSubmit();  // Submit changes
+              setShowDialog(false);  // Close the dialog
+              window.location.reload();  // Refresh the page
+            } else {
+              setShowDialog(true);  // Open the dialog for new job creation
+            }
+          }}
         >
-          Submit Job Posting
+          {isEditing ? "Update Changes" : "Create Job"}
         </button>
+
       </div>
 
       <Dialog open={showDialog} onOpenChange={setShowDialog}>

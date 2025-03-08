@@ -36,9 +36,11 @@ const Navbar = () => {
 
   const navLinks = [
     { text: 'Dashboard', path: '/' },
+    { text: 'Create Job', path: '/create-job' },
+    { text: 'Form Builder', path: '/form-builder' },
     { text: 'Job Postings', path: '/job-postings' },
     { text: 'Candidates', path: '/candidates' },
-    { text: 'Settings', path: '/settings' }
+    // { text: 'Settings', path: '/settings' },
   ];
 
   return (

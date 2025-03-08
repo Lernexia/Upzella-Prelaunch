@@ -1,14 +1,16 @@
 import Navbar from '@/components/Navbar';
 import { getCookie } from '@/hooks/cookies';
 import { supabase } from '@/hooks/supabase';
-import React, { useEffect, useState } from 'react';
-import { FileText, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Edit, Trash, Trash2, ViewIcon, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import JobPostingForm from '@/components/job-posting/JobPostingForm';
+import { Button } from '@/components/ui/button';
 
 function JobPostings() {
     const [jobs, setJobs] = useState<any[]>([]);
     const [selectedJob, setSelectedJob] = useState<any | null>(null);
+    const [jobFetchingLoading, setJobFetchingLoading] = useState<boolean>(false);
 
     const fetchUserJobs = async () => {
         const userId = getCookie('user_id');
@@ -38,17 +40,55 @@ function JobPostings() {
 
     useEffect(() => {
         const loadJobs = async () => {
+            setJobFetchingLoading(true);
             try {
                 const _jobs = await fetchUserJobs();
                 setJobs(_jobs);
             } catch (error) {
                 console.error("❌ Error loading jobs:", error);
             }
+            setJobFetchingLoading(false);
         };
         loadJobs();
     }, []);
 
     console.log("🚀 Jobs:", jobs);
+
+    const handleDeleteJob = async (jobIndex: number) => {
+        // if (!confirm('Are you sure you want to delete this job posting?')) {
+        //     return;
+        // }
+
+        const userId = getCookie('user_id');
+        if (!userId) {
+            console.error("❌ No user ID found in cookies.");
+            return;
+        }
+
+        try {
+            // Find the job to delete
+            const jobToDelete = jobs[jobIndex].jobDetails?.title;
+
+            
+            // Delete from Supabase
+            const { error } = await supabase
+                .from("demo_jobs")
+                .delete()
+                .eq("user_id", userId)
+                .eq("job_title", jobToDelete);
+            
+            if (error) {
+                console.error("❌ Error deleting job:", error);
+                return;
+            }
+            
+            // Update local state
+            setJobs(prevJobs => prevJobs.filter((_, idx) => idx !== jobIndex));
+            console.log("✅ Job deleted successfully");
+        } catch (error) {
+            console.error("❌ Failed to delete job:", error);
+        }
+    };
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-purple-100 via-purple-50/30 to-white">
@@ -63,9 +103,8 @@ function JobPostings() {
                                 {jobs.length > 0 ? jobs.map((job, index) => (
                                     <div
                                         key={index}
-                                        onClick={() => setSelectedJob(job)}
                                         className="bg-white rounded-lg overflow-hidden shadow-subtle border border-gray-100 
-                                        hover:shadow-md transition-all duration-300 cursor-pointer group"
+                                        hover:shadow-md transition-all duration-300 group"
                                     >
                                         <div className="bg-purple-100 relative overflow-hidden">
                                             <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/70"></div>
@@ -75,7 +114,7 @@ function JobPostings() {
                                                 </span>
                                             </div>
                                         </div>
-                                        
+
                                         <div className="p-5">
                                             <h3 className="text-lg font-semibold mb-2 bg-purple-600 text-white text-center px-2 py-1 rounded-full group-hover:opacity-50 transition-all">
                                                 {job.jobDetails?.title || 'No Title'}
@@ -83,16 +122,44 @@ function JobPostings() {
                                             <p className="text-gray-600 text-sm mb-4 line-clamp-2">
                                                 {job.jobDetails?.description || 'No Description'}
                                             </p>
-                                            <div className="flex items-center justify-between">
-                                                <span className="text-xs text-gray-500">Posted Recently</span>
-                                                <button className="text-purple-600 text-sm font-medium">
-                                                    View Applicants
+                                            <div className="flex items-center justify-between gap-3">
+
+                                                <div className='flex gap-3'>
+                                                    <button
+                                                        onClick={() => setSelectedJob(job)}
+                                                        className="text-purple-600 text-sm font-medium flex items-center hover:underline">
+                                                        <Edit className='w-4 h-4 mr-1' />
+                                                        Edit
+                                                    </button>
+                                                    <button className="text-purple-600 text-sm font-medium flex items-center hover:underline">
+                                                        <ViewIcon className='w-4 h-4 mr-1' />
+                                                        View Applicants
+                                                    </button>
+                                                </div>
+
+                                                <button 
+                                                onClick={() => handleDeleteJob(index)}
+                                                className="text-red-400 text-sm font-medium flex items-center hover:underline">
+                                                    <Trash className='w-4 h-4 mr-1' />
+                                                    Delete
                                                 </button>
+
                                             </div>
                                         </div>
                                     </div>
                                 )) : (
-                                    <p className="text-center text-gray-300">No job postings found.</p>
+                                    <>
+                                        {jobFetchingLoading
+                                            ?
+                                            (
+                                                <div className="flex items-center justify-center">
+                                                    <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-purple-500"></div>
+                                                </div>
+                                            )
+                                            :
+                                            (<p className="text-center text-gray-300">No job postings found.</p>)
+                                        }
+                                    </>
                                 )}
                             </div>
                         </div>
@@ -110,20 +177,23 @@ function JobPostings() {
                         exit={{ opacity: 0 }}
                     >
                         <motion.div
-                            className="bg-white rounded-lg relative shadow-lg max-w-3xl w-full p-6 h-[calc(100vh-5rem)] overflow-y-scroll"
+                            className="bg-white rounded-lg relative shadow-lg max-w-3xl w-full p-6 h-[calc(100vh-5rem)] overflow-y-auto scroll-m-4"
                             initial={{ y: -50, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             exit={{ y: -50, opacity: 0 }}
                         >
-                            <X 
-                            size={30}
-                            onClick={() => setSelectedJob(null)}
-                            className='flex text-red-400 font-extrabold items-end justify-items-end justify-end relative mb-4 right-0 cursor-pointer'
-                            />
+                            <Button
+                                onClick={() => setSelectedJob(null)}
+                                className='flex text-white mb-4 cursor-pointer'
+                            >
+                                Close
+                            </Button>
                             <JobPostingForm
-                            CJobDetails={selectedJob.jobDetails}
-                            ResumeConfig={selectedJob.resumeConfig}
-                            CRMConfig={selectedJob.crmConfig}
+                                CJobDetails={selectedJob.jobDetails}
+                                ResumeConfig={selectedJob.resumeConfig}
+                                CRMConfig={selectedJob.crmConfig}
+                                isEditing={true}
+                                prevJobUrl={selectedJob.jobUrl}
                             />
                         </motion.div>
                     </motion.div>
