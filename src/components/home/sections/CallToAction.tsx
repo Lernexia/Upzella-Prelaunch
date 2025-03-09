@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 
 const CallToAction = () => {
   return (
-    <section className="py-24 bg-purple-600 text-white">
+    <section className="py-24 bg-gradient-to-br from-purple-600 to-purple-800  text-white">
       <div className="max-container">
         <div className="animate-on-scroll transition-all duration-700 opacity-0 translate-y-10 grid md:grid-cols-2 gap-12 items-center">
           <div>
@@ -42,7 +42,7 @@ const CallToAction = () => {
           </div>
           
           <div className="animate-on-scroll transition-all duration-700 opacity-0 translate-y-10 delay-200">
-            <div className="bg-purple-700 p-8 rounded-xl">
+            <div className="bg-white bg-opacity-10 backdrop-blur-sm p-8 rounded-xl">
               <div className="space-y-4">
                 {[
                   "Real-time candidate tracking",
