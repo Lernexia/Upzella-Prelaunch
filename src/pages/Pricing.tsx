@@ -83,7 +83,7 @@ function Pricing() {
                                 <div className='relative flex '>
                                     <span className="absolute inline-flex  h-full w-full  motion-safe:animate-ping2 rounded-full bg-purple-700 opacity-75"></span>
                                     <Link
-                                        to="/https://demo-app.upzella.in/"
+                                        to="https://demo-app.upzella.in/"
                                         className={cn(
                                             "bg-white w-full text-purple-700 border border-purple-200 px-6 py-3 rounded-lg font-medium",
                                             "transition-all duration-300 hover:bg-purple-50 hover:border-purple-300",
