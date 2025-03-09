@@ -12,7 +12,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           <div>
             <Link to="/" className="inline-block mb-4">
-              <span className="font-bold text-2xl text-purple-700">UpZella</span>
+              <span className="font-bold text-2xl text-purple-700">Upzella</span>
             </Link>
             <p className="text-gray-600 mb-4 text-sm leading-relaxed">
               AI-powered hiring copilot that automates recruitment for businesses of all sizes.
@@ -24,7 +24,7 @@ const Footer = () => {
               <a href="#" className="text-gray-400 hover:text-purple-600 transition-colors" aria-label="LinkedIn">
                 <Linkedin size={18} />
               </a>
-              <a href="mailto:info@upzella.com" className="text-gray-400 hover:text-purple-600 transition-colors" aria-label="Email">
+              <a href="mailto:info@upzella.in" className="text-gray-400 hover:text-purple-600 transition-colors" aria-label="Email">
                 <Mail size={18} />
               </a>
             </div>
@@ -91,8 +91,8 @@ const Footer = () => {
               </li>
               <li className="flex items-start text-sm">
                 <Mail size={16} className="text-purple-600 mr-2 mt-0.5" />
-                <a href="mailto:info@upzella.com" className="text-gray-600 hover:text-purple-600 transition-colors">
-                  info@upzella.com
+                <a href="mailto:contact@upzella.in" className="text-gray-600 hover:text-purple-600 transition-colors">
+                  contact@upzella.in
                 </a>
               </li>
               <li className="flex items-start text-sm">
@@ -106,13 +106,11 @@ const Footer = () => {
           </div>
         </div>
         
-        <div className="pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-gray-500 text-sm mb-4 md:mb-0">
-            &copy; {currentYear} UpZella. All rights reserved.
+        <div className="pt-8 border-t text-center w-full border-gray-200 flex flex-col md:flex-row justify-between items-center">
+          <p className="text-gray-500 text-sm mb-4 md:mb-0 text-center w-full">
+            &copy; {currentYear} Upzella. All rights reserved.
           </p>
-          <p className="text-gray-500 text-sm flex items-center">
-            Made with <Heart size={14} className="text-purple-500 mx-1" /> by UpZella Team
-          </p>
+       
         </div>
       </div>
     </footer>

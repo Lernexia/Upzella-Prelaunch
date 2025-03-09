@@ -75,6 +75,7 @@ export default {
 					800: '#3812DF',
 					900: '#2C0EBB',
 				},
+
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

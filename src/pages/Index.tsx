@@ -32,7 +32,7 @@ const Index = () => {
         <Integrations />
         <KeyBenefits />
         <CallToAction />
-        <TrustedCompanies />
+        {/* <TrustedCompanies /> */}
         <AiTechnology />
         <RoiCalculator />
         <Resources />

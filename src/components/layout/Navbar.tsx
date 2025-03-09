@@ -38,6 +38,7 @@ const Navbar = () => {
     { text: 'Home', path: '/' },
     { text: 'How It Works', path: '/how-it-works' },
     { text: 'Why Choose Us', path: '/why-choose-us' },
+    { text: 'Pricing', path: '/pricing' },
     { text: 'Contact', path: '/contact' }
   ];
 
@@ -49,7 +50,7 @@ const Navbar = () => {
       <div className="max-container flex items-center justify-between">
         <Link to="/" className="flex items-center">
 
-          <span className="font-bold text-2xl text-purple-700">UpZella</span>
+          <span className="font-bold text-2xl text-purple-700">Upzella</span>
           {/* <span className="ml-2 px-2 py-0.5 bg-white rounded-full text-purple-600 text-xs font-medium">
             HR Portal
           </span> */}

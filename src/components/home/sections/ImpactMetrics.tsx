@@ -14,7 +14,7 @@ const ImpactMetrics = () => {
             Transforming Hiring Across Industries
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            Companies using UpZella are seeing dramatic improvements in their recruitment processes.
+            Companies using Upzella are seeing dramatic improvements in their recruitment processes.
           </p>
         </div>
         

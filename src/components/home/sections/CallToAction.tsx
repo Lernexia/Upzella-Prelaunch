@@ -14,18 +14,18 @@ const CallToAction = () => {
               Ready to Transform Your Hiring Process?
             </h2>
             <p className="text-purple-100 text-lg mb-8">
-              Join hundreds of companies that are already benefiting from UpZella's AI-powered hiring platform.
+              Join hundreds of companies that are already benefiting from Upzella's AI-powered hiring platform.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link 
-                to="/contact" 
+                to="/create-job" 
                 className={cn(
                   "bg-white text-purple-700 px-6 py-3 rounded-lg font-medium",
                   "transition-all duration-300 hover:bg-gray-100",
                   "flex items-center justify-center hover:-translate-y-1"
                 )}
               >
-                Schedule a Demo
+                Try a Demo
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
               <Link 

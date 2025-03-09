@@ -96,7 +96,7 @@ const Features = () => {
     {
       icon: <Database size={24} />,
       title: "Seamless CRM & ATS Integration",
-      description: "Connect UpZella with your existing systems for a unified workflow that enhances your current recruitment process.",
+      description: "Connect Upzella with your existing systems for a unified workflow that enhances your current recruitment process.",
       delay: 300,
     },
     {
@@ -121,7 +121,7 @@ const Features = () => {
             Revolutionize Your Hiring Process
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto text-lg">
-            UpZella combines cutting-edge AI technology with intuitive design to streamline every stage of your recruitment workflow.
+            Upzella combines cutting-edge AI technology with intuitive design to streamline every stage of your recruitment workflow.
           </p>
         </div>
         

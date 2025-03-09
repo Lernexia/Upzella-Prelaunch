@@ -16,14 +16,14 @@ const Testimonials = () => {
             What Our Clients Say
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            UpZella has transformed hiring processes for companies across various industries.
+            Upzella has transformed hiring processes for companies across various industries.
           </p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
             {
-              quote: "UpZella helped us reduce our hiring time by 70% while improving the quality of candidates we interview.",
+              quote: "Upzella helped us reduce our hiring time by 70% while improving the quality of candidates we interview.",
               author: "Sarah Johnson",
               role: "HR Director, TechStream Inc."
             },
