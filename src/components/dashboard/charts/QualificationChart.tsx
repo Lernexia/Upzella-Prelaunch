@@ -11,7 +11,7 @@ const qualificationData = [
   { name: 'Pending', value: 23 },
 ];
 
-const COLORS = ['#0ea5e9', '#f97316', '#d946ef'];
+const COLORS = ['#6C4EF3', '#9F7AEA', '#D6BCFA'];
 
 const QualificationChart = () => {
   return (

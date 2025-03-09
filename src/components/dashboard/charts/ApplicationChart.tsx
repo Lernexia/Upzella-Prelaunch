@@ -30,16 +30,16 @@ const ApplicationChart = () => {
             >
               <defs>
                 <linearGradient id="colorApplications" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#6C4EF3" stopOpacity={0.8}/>
+                  <stop offset="95%" stopColor="#6C4EF3" stopOpacity={0.1}/>
+                </linearGradient>
+                <linearGradient id="colorInterviews" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#9b87f5" stopOpacity={0.8}/>
                   <stop offset="95%" stopColor="#9b87f5" stopOpacity={0.1}/>
                 </linearGradient>
-                <linearGradient id="colorInterviews" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#0ea5e9" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#0ea5e9" stopOpacity={0.1}/>
-                </linearGradient>
                 <linearGradient id="colorHires" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#22c55e" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#22c55e" stopOpacity={0.1}/>
+                  <stop offset="5%" stopColor="#D6BCFA" stopOpacity={0.8}/>
+                  <stop offset="95%" stopColor="#D6BCFA" stopOpacity={0.1}/>
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
@@ -47,9 +47,9 @@ const ApplicationChart = () => {
               <YAxis tick={{ fill: '#666' }} />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
-              <Area type="monotone" dataKey="applications" stroke="#9b87f5" fillOpacity={1} fill="url(#colorApplications)" />
-              <Area type="monotone" dataKey="interviews" stroke="#0ea5e9" fillOpacity={1} fill="url(#colorInterviews)" />
-              <Area type="monotone" dataKey="hires" stroke="#22c55e" fillOpacity={1} fill="url(#colorHires)" />
+              <Area type="monotone" dataKey="applications" stroke="#6C4EF3" fillOpacity={1} fill="url(#colorApplications)" />
+              <Area type="monotone" dataKey="interviews" stroke="#9b87f5" fillOpacity={1} fill="url(#colorInterviews)" />
+              <Area type="monotone" dataKey="hires" stroke="#D6BCFA" fillOpacity={1} fill="url(#colorHires)" />
             </AreaChart>
           </ResponsiveContainer>
         </div>

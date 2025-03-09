@@ -32,10 +32,10 @@ const DepartmentHiringChart = () => {
               <YAxis tick={{ fill: '#666' }} />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
-              <Bar name="Open Positions" dataKey="openPositions" fill="#9b87f5" radius={[4, 4, 0, 0]} />
-              <Bar name="Applications" dataKey="applications" fill="#0ea5e9" radius={[4, 4, 0, 0]} />
-              <Bar name="Interviews" dataKey="interviews" fill="#f97316" radius={[4, 4, 0, 0]} />
-              <Bar name="Hires" dataKey="hires" fill="#22c55e" radius={[4, 4, 0, 0]} />
+              <Bar name="Open Positions" dataKey="openPositions" fill="#4722eb" radius={[4, 4, 0, 0]} />
+              <Bar name="Applications" dataKey="applications" fill="#6C4EF3" radius={[4, 4, 0, 0]} />
+              <Bar name="Interviews" dataKey="interviews" fill="#9b87f5" radius={[4, 4, 0, 0]} />
+              <Bar name="Hires" dataKey="hires" fill="#D6BCFA" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>

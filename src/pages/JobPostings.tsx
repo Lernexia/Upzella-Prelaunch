@@ -2,7 +2,7 @@ import Navbar from '@/components/Navbar';
 import { getCookie } from '@/hooks/cookies';
 import { supabase } from '@/hooks/supabase';
 import { useEffect, useState } from 'react';
-import { Edit, Trash, Trash2, ViewIcon, X } from 'lucide-react';
+import { Check, Copy, Edit, Trash, Trash2, ViewIcon, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import JobPostingForm from '@/components/job-posting/JobPostingForm';
 import { Button } from '@/components/ui/button';
@@ -19,6 +19,9 @@ function JobPostings() {
     const [prevFormUrl, setPrevFormUrl] = useState<string>("");
     const [jobTitle, setJobTitle] = useState<string>("");
 
+    const [allForms, setAllForms] = useState<any[]>([]);
+    const [isCopied, setIsCopied] = useState<boolean>(false);
+
     const fetchUserJobs = async () => {
         const userId = getCookie('user_id');
 
@@ -27,11 +30,9 @@ function JobPostings() {
             return [];
         }
 
-        // console.log("✅ Fetching jobs for user:", userId);
-
         const { data, error } = await supabase
             .from("demo_jobs")
-            .select("job_details")
+            .select("job_details, form_id, job_url")
             .eq("user_id", userId)
             .order("created_at", { ascending: false });
 
@@ -39,8 +40,30 @@ function JobPostings() {
             console.error("❌ Supabase fetch error:", error);
             return [];
         }
+        const formPromises = data.map(async (job: any) => {
+            const { data: formData, error: formError } = await supabase
+                .from("demo_forms")
+                .select("form_details, form_url")
+                .eq("form_id", job.form_id)
+                .single();
 
-        // console.log("✅ Supabase response:", data);
+            if (formError) {
+                console.error("❌ Supabase fetch error:", formError);
+                return job;
+            }
+
+            return {
+                ...job,
+                form_details: formData.form_details,
+                form_url: formData.form_url,
+            };
+        });
+
+        const jobsWithForms = await Promise.all(formPromises);
+
+        console.log("✅ Jobs fetched successfully: ", jobsWithForms);
+
+        setAllForms(jobsWithForms);
 
         return data.map(job => job.job_details) || [];
     };
@@ -96,45 +119,24 @@ function JobPostings() {
         }
     };
 
-    const handleFormBuilderOpen = async (job: any) => {
-
-
-        const { data, error } = await supabase
-            .from("demo_jobs")
-            .select("form_id")
-            .eq("job_url", job.jobUrl)
-            .single();
-
-        if (error) {
-      
-            console.error("❌ Supabase fetch error:", error);
-            return;
-        }
-
-        const formId = data.form_id;
-
-        const { data: formData, error: formError } = await supabase
-            .from("demo_forms")
-            .select("form_details, form_url, form_id")
-            .eq("form_id", formId)
-            .single();
-
-        if (formError) {
-            toast({
-                title: "No form found",
-                description: "No form found for this job posting.",
-                variant: "destructive"
-            });
-            console.error("❌ Supabase fetch error:", formError);
-            return;
-        }
-
-        setPrevFormUrl(formData.form_url);
-        setFormDetails(formData.form_details);
+    const handleFormBuilderOpen = (job: any) => {
+        console.log(job)
+        setPrevFormUrl(job.form_url);
+        setFormDetails(job.form_details);
         setJobTitle(job.jobDetails?.title);
-
         setOpenFormBuilder(true);
     }
+
+    const handleCopyUrl = (job: any) => {
+        navigator.clipboard.writeText(job.form_url);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2000);
+        toast({
+            title: "URL Copied!",
+            description: "The form URL has been copied to your clipboard."
+        });
+    };
+
 
     return (
         <FormBuilderProvider>
@@ -153,7 +155,7 @@ function JobPostings() {
                                 <div className="w-full">
                                     <div className="p-4">
                                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                            {jobs.length > 0 ? jobs.map((job, index) => (
+                                            {allForms.length > 0 ? allForms.map((job, index) => (
                                                 <div
                                                     key={index}
                                                     className="bg-white rounded-lg overflow-hidden shadow-subtle border border-gray-100 
@@ -169,17 +171,28 @@ function JobPostings() {
                                                     </div>
 
                                                     <div className="p-5">
-                                                        <h3 className="text-lg font-semibold mb-2 bg-purple-600 text-white text-center px-2 py-1 rounded-full group-hover:opacity-50 transition-all">
-                                                            {job.jobDetails?.title || 'No Title'}
+                                                        <h3 className="text-lg font-semibold mb-2 bg-purple-600 text-white text-center px-2 py-1 rounded-full transition-all">
+                                                            {job.job_details.jobDetails?.title || 'No Title'}
                                                         </h3>
                                                         <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                                                            {job.jobDetails?.description || 'No Description'}
+                                                            {job.job_details.jobDetails?.description || 'No Description'}
                                                         </p>
+                                                        <div className='mb-4 w-full overflow-hidden relative border p-2 rounded-md flex items-center border-purple-600 text-purple-600'>
+                                                            <p className='relative'>{job.form_url || 'No Form URL'}</p>
+                                                            {job.form_url && (
+                                                                <div
+                                                                    onClick={() => handleCopyUrl(job)}
+                                                                    className='absolute cursor-pointer hover:bg-purple-100 right-0 flex justify-center items-center pl-2 p-2 bg-purple-200 backdrop-blur-sm rounded-tr-md rounded-br-md h-full'>
+                                                                    {/* <Copy className='w-6 h-6 rounded-sm p-1 bg-purple-500 text-white' /> */}
+                                                                    {isCopied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+
+                                                                </div>)}
+                                                        </div>
                                                         <div className="flex items-center justify-between gap-3">
 
                                                             <div className='flex gap-3'>
                                                                 <button
-                                                                    onClick={() => setSelectedJob(job)}
+                                                                    onClick={() => {setSelectedJob(job)}}
                                                                     className="text-purple-600 text-sm font-medium flex items-center hover:underline">
                                                                     <Edit className='w-4 h-4 mr-1' />
                                                                     Edit
@@ -246,9 +259,9 @@ function JobPostings() {
                                             Close
                                         </Button>
                                         <JobPostingForm
-                                            CJobDetails={selectedJob.jobDetails}
-                                            ResumeConfig={selectedJob.resumeConfig}
-                                            CRMConfig={selectedJob.crmConfig}
+                                            CJobDetails={selectedJob.job_details.jobDetails}
+                                            ResumeConfig={selectedJob.job_details.resumeConfig}
+                                            CRMConfig={selectedJob.job_details.crmConfig}
                                             isEditing={true}
                                             prevJobUrl={selectedJob.jobUrl}
                                         />

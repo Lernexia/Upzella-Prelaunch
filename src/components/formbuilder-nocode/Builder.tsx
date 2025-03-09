@@ -533,9 +533,9 @@ export const BuilderInterface: React.FC<BuilderInterfaceProps> = ({ onBack, temp
               </div>
             </div>
           ) : (
-            <div className="form-builder-container  relative">
+            <div className="form-builder-container relative">
               {/* Left Sidebar - Field Types */}
-              <div className="form-builder-sidebar sticky top-20 h-fit">
+              <div className="form-builder-sidebar min-[1023px]:sticky top-20 h-fit">
                 <h3 className="font-medium mb-3">Form Elements</h3>
                 <p className="text-sm text-gray-500 mb-4">Drag elements onto the form canvas</p>
 
