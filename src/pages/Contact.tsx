@@ -211,7 +211,7 @@ const ContactUs = () => {
                   <span>Start a Conversation</span>
                 </Link>
                 <Link
-                to="/create-job"
+                to="/https://demo-app.upzella.in/"
                   className="px-6 py-3 rounded-lg flex items-center gap-2 bg-transparent text-white font-medium border border-white/30 hover:bg-white/10 transition-all duration-300 hover:translate-y-[-2px]"
                 >
                   <Hand size={18} />
@@ -329,7 +329,7 @@ const ContactUs = () => {
                         See how Upzella can transform your recruitment process with a personalized demo.
                       </p>
                       <Link
-                        to="/create-job"
+                        to="/https://demo-app.upzella.in/"
                         className="px-6 py-3 w-fit rounded-lg flex items-center gap-2 bg-white text-purple-700 font-medium hover:bg-opacity-90 transition-all duration-300 shadow-lg shadow-purple-900/20 hover:shadow-purple-900/30 hover:translate-y-[-2px]"
                       >
                         <Send size={18} />

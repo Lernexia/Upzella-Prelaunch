@@ -18,7 +18,7 @@ const CallToAction = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link 
-                to="/create-job" 
+                to="/https://demo-app.upzella.in/" 
                 className={cn(
                   "bg-white text-purple-700 px-6 py-3 rounded-lg font-medium",
                   "transition-all duration-300 hover:bg-gray-100",
